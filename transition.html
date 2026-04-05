@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Projects...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05070d;
+            --accent: #5da9ff;
+            --accent2: #8b5cf6;
+            --text: #eaf2ff;
+            --muted: #7a8eae;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html, body { width:100%; height:100%; overflow:hidden; }
+
+        body {
+            background:var(--bg);
+            font-family:'Space Mono', monospace;
+            color:var(--text);
+            display:flex; align-items:center; justify-content:center;
+            position:relative;
+        }
+
+        canvas { position:fixed; inset:0; z-index:0; }
+
+        /* Grid overlay */
+        body::before {
+            content:''; position:fixed; inset:0; z-index:1;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size:50px 50px;
+        }
+
+        .orb {
+            position:fixed; border-radius:50%; filter:blur(100px);
+            opacity:0; z-index:0; pointer-events:none;
+            transition:opacity 1s ease;
+        }
+        .orb-1 { width:600px; height:600px; background:radial-gradient(circle,rgba(93,169,255,0.25),transparent 70%); top:-200px; left:-200px; }
+        .orb-2 { width:500px; height:500px; background:radial-gradient(circle,rgba(139,92,246,0.25),transparent 70%); bottom:-150px; right:-150px; }
+        .orb.show { opacity:1; }
+
+        /* Center stage */
+        .stage {
+            position:relative; z-index:2;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            gap:0;
+            opacity:0;
+            animation:fadeIn .4s ease .1s forwards;
+        }
+        @keyframes fadeIn { to { opacity:1; } }
+
+        /* AK monogram */
+        .monogram {
+            font-family:'Cormorant Garamond', serif;
+            font-size:5.5rem; font-weight:300;
+            letter-spacing:-0.04em; line-height:1;
+            color:transparent;
+            -webkit-text-stroke:1px rgba(255,255,255,0.15);
+            position:relative;
+            animation:monoReveal 1.4s cubic-bezier(.22,1,.36,1) .2s forwards;
+        }
+        .monogram .filled {
+            position:absolute; inset:0;
+            background:linear-gradient(135deg,var(--accent),var(--accent2));
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            clip-path:inset(100% 0 0 0);
+            animation:fillReveal 1.2s cubic-bezier(.22,1,.36,1) .4s forwards;
+        }
+        @keyframes monoReveal { to { -webkit-text-stroke-color: rgba(255,255,255,0.08); } }
+        @keyframes fillReveal { to { clip-path:inset(0% 0 0 0); } }
+
+        /* Tagline */
+        .tagline {
+            font-family:'Cormorant Garamond', serif;
+            font-style:italic; font-weight:300;
+            font-size:1.15rem;
+            color:var(--muted);
+            letter-spacing:0.05em;
+            opacity:0;
+            transform:translateY(8px);
+            animation:slideUp .8s ease .9s forwards;
+        }
+        @keyframes slideUp { to { opacity:1; transform:translateY(0); } }
+
+        /* Progress bar */
+        .progress-wrap {
+            width:200px; margin-top:48px;
+            opacity:0;
+            animation:slideUp .6s ease 1s forwards;
+        }
+        .progress-track {
+            height:1px;
+            background:rgba(255,255,255,0.08);
+            border-radius:1px;
+            overflow:hidden;
+        }
+        .progress-fill {
+            height:100%;
+            background:linear-gradient(90deg,var(--accent),var(--accent2));
+            width:0%;
+            animation:progressRun 1.8s cubic-bezier(.4,0,.2,1) 1.1s forwards;
+            box-shadow:0 0 8px var(--accent);
+        }
+        @keyframes progressRun { to { width:100%; } }
+
+        .progress-label {
+            display:flex; justify-content:space-between; margin-top:8px;
+            font-size:0.62rem; color:var(--muted); letter-spacing:0.12em;
+        }
+
+        /* Floating particles (JS) */
+        .ring-svg {
+            position:absolute;
+            width:260px; height:260px;
+            opacity:0;
+            animation:ringFade 1s ease .3s forwards;
+        }
+        @keyframes ringFade { to { opacity:0.12; } }
+        .ring-path { animation:ringRotate 20s linear infinite; transform-origin:130px 130px; }
+        @keyframes ringRotate { to { transform:rotate(360deg); } }
+
+        /* Overlay wipe out */
+        .wipe {
+            position:fixed; inset:0; z-index:100;
+            background:linear-gradient(135deg,var(--accent),var(--accent2));
+            clip-path:inset(0 100% 0 0);
+        }
+        .wipe.go { animation:wipeIn .55s cubic-bezier(.7,0,.3,1) forwards; }
+        @keyframes wipeIn {
+            0%  { clip-path:inset(0 100% 0 0); }
+            50% { clip-path:inset(0 0% 0 0); }
+            100%{ clip-path:inset(0 0% 0 100%); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <div class="orb orb-1" id="o1"></div>
+    <div class="orb orb-2" id="o2"></div>
+    <div class="wipe" id="wipe"></div>
+
+    <div class="stage">
+        <!-- Decorative ring behind monogram -->
+        <svg class="ring-svg" viewBox="0 0 260 260">
+            <circle class="ring-path" cx="130" cy="130" r="120" fill="none"
+                stroke="url(#rg)" stroke-width="1" stroke-dasharray="12 6"/>
+            <defs>
+                <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#5da9ff"/>
+                    <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <div class="monogram">
+            AK
+            <span class="filled" aria-hidden="true">AK</span>
+        </div>
+
+        <p class="tagline">Loading Projects&hellip;</p>
+
+        <div class="progress-wrap">
+            <div class="progress-track">
+                <div class="progress-fill" id="pfill"></div>
+            </div>
+            <div class="progress-label">
+                <span>ADITHYA K</span>
+                <span id="pct">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show orbs
+        setTimeout(()=>{ document.getElementById('o1').classList.add('show'); document.getElementById('o2').classList.add('show'); }, 300);
+
+        // Percentage counter
+        let pct = 0;
+        const pctEl = document.getElementById('pct');
+        const interval = setInterval(()=>{
+            pct = Math.min(100, pct + Math.floor(Math.random()*8)+2);
+            pctEl.textContent = pct+'%';
+            if(pct>=100){ clearInterval(interval); triggerWipe(); }
+        }, 60);
+
+        function triggerWipe(){
+            setTimeout(()=>{
+                document.getElementById('wipe').classList.add('go');
+                setTimeout(()=>{ location.href='project.html'; }, 560);
+            }, 300);
+        }
+
+        // Particle canvas
+        const cv = document.getElementById('c');
+        const cx = cv.getContext('2d');
+        function rsz(){ cv.width=innerWidth; cv.height=innerHeight; }
+        rsz(); window.addEventListener('resize', rsz);
+        const pts = Array.from({length:60},()=>({
+            x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+            sz:Math.random()*1.2+.2, vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4,
+            op:Math.random()*.35+.05, col:Math.random()>.5?'93,169,255':'139,92,246'
+        }));
+        (function loop(){
+            cx.clearRect(0,0,cv.width,cv.height);
+            pts.forEach(p=>{
+                p.x+=p.vx; p.y+=p.vy;
+                if(p.x<0||p.x>cv.width) p.vx*=-1;
+                if(p.y<0||p.y>cv.height) p.vy*=-1;
+                cx.beginPath(); cx.arc(p.x,p.y,p.sz,0,Math.PI*2);
+                cx.fillStyle=`rgba(${p.col},${p.op})`; cx.fill();
+            });
+            requestAnimationFrame(loop);
+        })();
+    </script>
+</body>
+</html>

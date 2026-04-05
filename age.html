@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Calculator</title>
+
+    <link rel="stylesheet" href="age-style.css">
+    <link rel="icon" type="image/x-icon" href="search.png">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Syne:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="wrapper">
+        <div class="card">
+
+            <h1 class="title">Life Calculator</h1>
+            <p class="subtitle">Discover your journey through time.</p>
+
+            <div class="divider"></div>
+
+            <div class="input-wrap">
+                <label class="input-label">Date of Birth</label>
+                <input type="date" id="dob">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="calculateLife()">
+                    Calculate Age
+                </button>
+
+                <!-- CORRECT BACK BUTTON -->
+                <button class="btn btn-outline" onclick="window.location.href='index.html'">
+                    ← Back to Portfolio
+                </button>
+            </div>
+
+            <div id="result-box">
+                <p id="result"></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="age-script.js"></script>
+
+</body>
+</html>

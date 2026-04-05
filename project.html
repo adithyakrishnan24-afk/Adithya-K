@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects — Adithya K</title>
+    <link rel="stylesheet" href="project-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Page entrance */
+        body { opacity:0; animation:pgIn .6s ease .05s forwards; }
+        @keyframes pgIn { to { opacity:1; } }
+        .card { opacity:0; transform:translateY(24px); animation:cardIn .7s cubic-bezier(.22,1,.36,1) .15s forwards; }
+        @keyframes cardIn { to { opacity:1; transform:translateY(0); } }
+        .project-box:nth-child(1){ animation-delay:.25s; }
+        .project-box:nth-child(2){ animation-delay:.35s; }
+        .project-box:nth-child(3){ animation-delay:.45s; }
+        .project-box { opacity:0; transform:translateY(16px); animation:cardIn .6s cubic-bezier(.22,1,.36,1) forwards; }
+
+        /* Tags */
+        .tag-row { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:14px; }
+        .tag {
+            font-size:0.68rem; padding:3px 10px; border-radius:20px;
+            background:rgba(93,169,255,0.1); border:1px solid rgba(93,169,255,0.22);
+            color:#7abfff; font-family:'Space Mono',monospace; letter-spacing:0.03em;
+        }
+        .tag.purple { background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.22); color:#b08bff; }
+        .tag.green  { background:rgba(52,211,153,0.1);  border-color:rgba(52,211,153,0.22);  color:#5eebb0; }
+
+        /* Button row */
+        .btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+        .btn-disabled {
+            display:inline-flex; align-items:center; gap:5px;
+            background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+            color:var(--muted); padding:10px 16px; border-radius:12px;
+            font-size:0.8rem; cursor:default; font-family:'DM Sans',sans-serif;
+        }
+
+        /* Title override for new font */
+        .title {
+            font-family:'Cormorant Garamond',serif !important;
+            font-size:2.2rem !important; font-weight:600 !important;
+            font-style:italic;
+        }
+        .project-box h3 { font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:600; }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="wrapper">
+        <div class="card">
+
+            <h1 class="title">My Projects</h1>
+            <p class="subtitle">Things I've designed, built & shipped.</p>
+
+            <div class="divider"></div>
+
+            <!-- Age Calculator -->
+            <div class="project-box">
+                <h3>Age Calculator</h3>
+                <p>Calculate your exact age in years, months, and days with a clean minimal interface.</p>
+                <div class="tag-row">
+                    <span class="tag">HTML</span>
+                    <span class="tag">CSS</span>
+                    <span class="tag">JavaScript</span>
+                </div>
+                <div class="btn-row">
+                    <a href="age.html" class="btn btn-primary">Open Project &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Dyscalculia -->
+            <div class="project-box">
+                <h3>Dyscalculia Detection System</h3>
+                <p>ML web app that detects dyscalculia through adaptive tests — symbolic reasoning, fractions, working memory. Role-based dashboards for students, teachers, and parents.</p>
+                <div class="tag-row">
+                    <span class="tag purple">Python</span>
+                    <span class="tag purple">Flask</span>
+                    <span class="tag purple">scikit-learn</span>
+                    <span class="tag green">ML</span>
+                    <span class="tag">PostgreSQL</span>
+                </div>
+                <div class="btn-row">
+                    <a href="https://github.com/adi-krsh/dyscalculia" target="_blank" class="btn btn-outline">GitHub</a>
+                    <span class="btn-disabled">🖥 Runs Locally</span>
+                </div>
+            </div>
+
+            <!-- AI Stock Platform -->
+            <div class="project-box">
+                <h3>AI Stock Analysis Platform</h3>
+                <p>Full-stack AI stock platform with LSTM price prediction, NLP sentiment on financial news, paper trading engine, and a chatbot advisor — live market data powered.</p>
+                <div class="tag-row">
+                    <span class="tag purple">Python</span>
+                    <span class="tag purple">FastAPI</span>
+                    <span class="tag green">LSTM</span>
+                    <span class="tag green">NLP</span>
+                    <span class="tag">yfinance</span>
+                    <span class="tag">JavaScript</span>
+                </div>
+                <div class="btn-row">
+                    <a href="https://github.com/adi-krsh/ai-stock-platform" target="_blank" class="btn btn-outline">GitHub</a>
+                    <span class="btn-disabled">🖥 Runs Locally</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-outline">← Back to Portfolio</a>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
